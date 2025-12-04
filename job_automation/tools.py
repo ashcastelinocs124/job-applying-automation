@@ -14,6 +14,7 @@ agentops.init(
 )
 web_search_tool = WebsiteSearchTool()
 serp_dev_tool = SerperDevTool()
+
 file_read_tool = FileReadTool(
     file_path = "job_description_example.md",
     description = "A tool used to read the job description example"

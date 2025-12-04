@@ -1,4 +1,4 @@
-from tools import web_search_tool, serp_dev_tool,file_read_tool
+from job_automation.tools import web_search_tool, serp_dev_tool,file_read_tool
 from crewai import Crew, Agent, Task
 from crewai_tools.tools import WebsiteSearchTool, SerperDevTool, FileReadTool
 
@@ -32,6 +32,13 @@ class Agents:
         backstory = "A detailed oriented editor with an eye for detail and every piece of content",
         verbose = True
     )
+  def cover_letter_agent(self):
+     return Agent(
+        role = "Cover Letter speciliast,",
+        goal = "Write personalized, compelling cover letter and align with company values",
+        backstory = "Expert at crafting persuasive cover letters that connect candidate strenghts with job requirements and company culture",
+        verbose = True
+     )
 
 class Tasks:
   def research_company_culture_task(self, agent, company_description, company_domain):
@@ -73,7 +80,39 @@ class Tasks:
             agent=agent,
         )
   
-  
-
+  def generate_cover_letter_task(self, agent, resume_content, job_posting, company_culture_insights):
+    return Task(
+        description=dedent(
+            f"""\
+            Write a compelling cover letter based on the following:
+            
+            Resume Content: {resume_content}
+            
+            Job Posting: {job_posting}
+            
+            Company Culture & Values: {company_culture_insights}
+            
+            The cover letter should:
+            - Open with a strong hook that shows genuine interest in the company
+            - Highlight 2-3 key skills from the resume that match the job requirements
+            - Demonstrate understanding of the company's culture and values
+            - Include specific examples of relevant achievements
+            - Close with a clear call to action
+            - Maintain a professional yet personable tone
+            - Be 3-4 paragraphs long"""
+        ),
+        expected_output=dedent(
+            """\
+            A polished, personalized cover letter (3-4 paragraphs) that:
+            - Opens with genuine interest in the role and company
+            - Demonstrates alignment between candidate skills and job requirements
+            - Shows understanding of company culture
+            - Includes specific, relevant examples
+            - Has a strong closing with call to action
+            - Is error-free and professionally formatted"""
+        ),
+        agent=agent,
+    )
+   
 
 
