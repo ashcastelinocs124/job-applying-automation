@@ -91,6 +91,21 @@ OPENAI_API_KEY=your-key-here
 SERPER_API_KEY=your-key-here
 ```
 
+### Git Push Protocol
+When you ask to push code to GitHub:
+1. **I will ask**: "Which project folder should I push?" (e.g., `job_automation`, `fun`, etc.)
+2. **You specify**: The folder name containing the code to push
+3. **I will push**: ONLY that folder's changes to its respective repository
+4. **Why**: Prevents accidentally pushing unrelated code to wrong repositories
+
+Example:
+```
+You: "Push the code"
+Me: "Which project folder should I push? (e.g., job_automation, fun, etc.)"
+You: "job_automation"
+Me: "Pushing job_automation folder to GitHub..."
+```
+
 ---
 
 ## Current Status

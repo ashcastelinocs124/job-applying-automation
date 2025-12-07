@@ -46,3 +46,7 @@ Thumbs.db
 
 # AgentOps
 .agentops/
+
+# Generated Artifacts
+*.pdf
+.agent/
