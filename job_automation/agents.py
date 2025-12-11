@@ -43,7 +43,7 @@ class Agents:
     return Agent(
       role = "Resume Writer Speciliast",
       goal = "Create a resume based on the user_background and job/company information",
-      backstory = "Resume Expert that focuses on making a resume that connects the user background and job description",
+      backstory = "Resume Expert that focuses on making a resume that connects the user background and job description. ",
       verbose = True
     )
     
