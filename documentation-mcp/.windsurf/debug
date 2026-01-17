@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+"""
+Debug Workflow - Generates debugging reports for major issues
+"""
+
+import json
+import sys
+import traceback
+from datetime import datetime
+from pathlib import Path
+
+class DebugReporter:
+    def __init__(self):
+        self.timestamp = datetime.now()
+        self.report_data = {
+            "timestamp": self.timestamp.isoformat(),
+            "workflow": "debug_report",
+            "severity": "major",
+            "status": "investigation_required"
+        }
+    
+    def generate_debug_report(self, issue_description, error_details=None, context=None):
+        """
+        Generates a comprehensive debug report for major issues
+        that need to be passed to Claude or other AI assistants.
+        """
+        
+        report = {
+            **self.report_data,
+            "issue_description": issue_description,
+            "error_details": error_details or {},
+            "context": context or {},
+            "system_info": self._get_system_info(),
+            "environment": self._get_environment_info(),
+            "recent_changes": self._get_recent_changes(),
+            "troubleshooting_steps": self._generate_troubleshooting_steps(),
+            "recommendations": self._generate_recommendations(),
+            "escalation": {
+                "requires_claude_assistance": True,
+                "priority": "high",
+                "estimated_complexity": "medium_to_high"
+            }
+        }
+        
+        return report
+    
+    def _get_system_info(self):
+        """Gather system information for debugging"""
+        return {
+            "platform": sys.platform,
+            "python_version": sys.version,
+            "working_directory": str(Path.cwd()),
+            "available_memory": "N/A",  # Would need psutil for actual value
+            "disk_space": "N/A"  # Would need shutil for actual value
+        }
+    
+    def _get_environment_info(self):
+        """Gather environment variables and configuration"""
+        import os
+        env_vars = {}
+        relevant_vars = [
+            "MASTER_MCP_CONFIG", "MASTER_MCP_USE_AI", 
+            "MASTER_MCP_AI_MODEL", "MASTER_MCP_AI_PROVIDER",
+            "PATH", "PYTHONPATH"
+        ]
+        
+        for var in relevant_vars:
+            if var in os.environ:
+                env_vars[var] = os.environ[var]
+        
+        return {
+            "environment_variables": env_vars,
+            "config_files": self._check_config_files()
+        }
+    
+    def _check_config_files(self):
+        """Check for existence of configuration files"""
+        config_files = [
+            "config.json", "config.json.example",
+            "~/.cursor/mcp.json", "~/.master-mcp/config.json"
+        ]
+        
+        found_configs = []
+        for config in config_files:
+            config_path = Path(config).expanduser()
+            if config_path.exists():
+                found_configs.append(str(config_path))
+        
+        return found_configs
+    
+    def _get_recent_changes(self):
+        """Placeholder for recent changes detection"""
+        return {
+            "recent_commits": "Use git log to retrieve",
+            "modified_files": "Use git status to retrieve",
+            "last_workflow_run": self.timestamp.isoformat()
+        }
+    
+    def _generate_troubleshooting_steps(self):
+        """Generate standard troubleshooting steps"""
+        return [
+            "1. Check configuration files for syntax errors",
+            "2. Verify all MCP servers are running and accessible",
+            "3. Check network connectivity and firewall settings",
+            "4. Review system logs for error messages",
+            "5. Test individual components in isolation",
+            "6. Check for recent changes that may have caused the issue",
+            "7. Verify environment variables are set correctly"
+        ]
+    
+    def _generate_recommendations(self):
+        """Generate recommendations for issue resolution"""
+        return [
+            "Review the debug report carefully before proceeding",
+            "Start with high-impact, low-risk troubleshooting steps",
+            "Document all actions taken during debugging",
+            "Escalate to Claude if issue persists after basic troubleshooting",
+            "Consider creating a test case to reproduce the issue",
+            "Backup current configuration before making changes"
+        ]
+
+def main():
+    """Main debug workflow entry point"""
+    
+    if len(sys.argv) < 2:
+        print("Usage: python debug <issue_description> [error_details]")
+        print("Example: python debug 'MCP server connection failed'")
+        sys.exit(1)
+    
+    issue_description = sys.argv[1]
+    error_details = sys.argv[2] if len(sys.argv) > 2 else None
+    
+    try:
+        reporter = DebugReporter()
+        debug_report = reporter.generate_debug_report(
+            issue_description=issue_description,
+            error_details=error_details
+        )
+        
+        # Output debug report as JSON
+        print(json.dumps(debug_report, indent=2))
+        
+        # Save report to file for reference
+        report_file = Path(f"debug_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        with open(report_file, 'w') as f:
+            json.dump(debug_report, f, indent=2)
+        
+        print(f"\n✅ Debug report generated: {report_file}")
+        print("🚀 Ready to escalate to Claude for assistance")
+        
+    except Exception as e:
+        print(f"❌ Error generating debug report: {e}")
+        traceback.print_exc()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,8 @@
-from job_automation.tools import web_search_tool, serp_dev_tool,file_read_tool
+from tools import (
+    get_web_search_tool,
+    get_serp_dev_tool,
+    get_file_read_tool,
+)
 from crewai import Crew, Agent, Task
 
 
@@ -6,9 +10,8 @@ from dotenv import load_dotenv
 from textwrap import dedent
 
 
-
 class Tasks:
-  def research_company_culture_task(self, agent, company_description, company_domain):
+    def research_company_culture_task(self, agent, company_description, company_domain):
         return Task(
             description=dedent(
                 f"""\
@@ -21,7 +24,8 @@ class Tasks:
             ),
             agent=agent,
         )
-  def research_role_requirements_task(self, agent, hiring_needs):
+
+    def research_role_requirements_task(self, agent, hiring_needs):
         return Task(
             description=dedent(
                 f"""\
@@ -33,24 +37,26 @@ class Tasks:
             ),
             agent=agent,
         )
-  
-  def research_company_background(self, agent, company_name):
-     return Task(
-        description = dedent(
-           f"""\
-           Analyze aßnd summarize the company information {company_name}"""
-        ),
-        expected_output=dedent(
+
+    def research_company_background(self, agent, company_name):
+        return Task(
+            description=dedent(
+                f"""\
+           Analyze and summarize the company information {company_name}"""
+            ),
+            expected_output=dedent(
                 """\
 								A clear summary of what the company does."""
             ),
             agent=agent,
         )
-  
-  def generate_cover_letter_task(self, agent, resume_content, job_posting, company_culture_insights):
-    return Task(
-        description=dedent(
-            f"""\
+
+    def generate_cover_letter_task(
+        self, agent, resume_content, job_posting, company_culture_insights
+    ):
+        return Task(
+            description=dedent(
+                f"""\
             Write a compelling cover letter based on the following:
             
             Resume Content: {resume_content}
@@ -67,9 +73,9 @@ class Tasks:
             - Close with a clear call to action
             - Maintain a professional yet personable tone
             - Be 3-4 paragraphs long"""
-        ),
-        expected_output=dedent(
-            """\
+            ),
+            expected_output=dedent(
+                """\
             A polished, personalized cover letter (3-4 paragraphs) that:
             - Opens with genuine interest in the role and company
             - Demonstrates alignment between candidate skills and job requirements
@@ -77,13 +83,16 @@ class Tasks:
             - Includes specific, relevant examples
             - Has a strong closing with call to action
             - Is error-free and professionally formatted"""
-        ),
-        agent=agent,
-    )
-  def generate_resume_task(self, agent, resume_content, job_posting, company_culture_insights):
-    return Task(
-      description=dedent(
-        f"""\
+            ),
+            agent=agent,
+        )
+
+    def generate_resume(
+        self, agent, resume_content, job_posting, company_culture_insights
+    ):
+        return Task(
+            description=dedent(
+                f"""\
         Write a Resume based on the following:
 
         Resume Content: {resume_content}
@@ -97,9 +106,9 @@ class Tasks:
         - Emphasize achievements and quantifiable results
         - Tailor the summary and experience sections to the specific role
         """
-      ),
-      expected_output=dedent(
-        """\
+            ),
+            expected_output=dedent(
+                """\
         A professional, tailored resume that:
         - Accurately reflects the candidate's skills and experience
         - Is optimized for the specific job posting
@@ -107,7 +116,6 @@ class Tasks:
         - Uses strong action verbs and quantifiable metrics
         - Is formatted for readability and ATS compatibility
         """
-      ),
-      agent=agent
-    )
-  
+            ),
+            agent=agent,
+        )
